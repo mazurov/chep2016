@@ -100,20 +100,82 @@ and regression tests run on the LHCb applications. In this paper we introduce
 a new architecture and implementation of LHCbPR system which allows to avoid
 some major pitfalls of the previous version~\cite{lhcbpr}.
 
-The first section gives a brief overview of the prevois LHCbPR version,
+The second section gives a brief overview of the prevois LHCbPR version,
 its advantages and disadvantages, following by the description of the
-new architecture. In the second section the implementation details are outlined.
-Real examples are shown in the third section.
+new architecture. In the third section the implementation details are outlined.
+Real examples are shown in the forth section.
 
 \section{LHCbPR architecture evolution}
 
-LHCbPR 
+Figure~\ref{fig01} presents a general sequence diagram of interaction between
+the tests running service, LHCbPR  and users. From the diagram we see that the
+test running service request information on how to run tests, run theses tests
+and then save results back to LHCbPR. Users have an ability to retrive and
+analyse these results.
+
+\begin{figure}[H]
+\begin{minipage}{\textwidth}
+\centering
+\includegraphics[width=0.8\textwidth]{figs/lhcbpr-general.pdf}
+\caption{\label{fig01} General sequence diagram of interaction between test
+running services, LHCbPR and users}
+\end{minipage}
+\end{figure}
+
+% https://impact.hackpad.com/Advantages-and-Disadvantages-of-a-Monolith-Application-ZlrQRl3LHCg
+% http://microservices.io/patterns/monolithic.html
+\subsection{Monolithic architecture}
+The first version of the LHCbPR has a monolithic architecture, in which all
+required functionality is integrated into one application. All components of
+such application are stored in one codebase that leads to the common inherent
+issues like:
+\begin{itemize}
+\item The application can be difficult to understand and modify. That
+intimidates new developers and slow down the development process.
+\item There are usually no hard boundaries between components and that
+boundaries are easy to break
+\item Continuous deployment is difficult since in order to update one component
+you have to redeploy the entire application. This is especially an issue in
+components that requires rapid and frequent redeployment, like user interfaces.
+\item A monolithic application forces you to be coupled to the certain
+technology stack. That leads to the situation where, for example, can be
+difficult to adopt a newer technology.
+\end{itemize}
+
+The monolithic architecture was chosen initially since it has benefits at the
+prototyping of software products:
+\begin{itemize}
+\item Simple to develop small application since you are working on one codebase
+and all developers are working with the same technology stack.  
+\item Simple to deploy since you usually have to run the application in the same
+runtime and environment.
+\item Simple to scale --- you can run multiply copies of the application behind a
+load balancer.
+\end{itemize}
+
+But the advantages of such architecture works only for small application,
+usually at the time where you only start to develop it. In the growing
+monolithic application the disadvantages become more annoying and slow down the
+development process. One of the solution is to use microservices architecture.  
+
+\subsection{Microservices architecture}
+In opposite to the monolithic architecture, in the microservices architecture
+the application is built from the smaller components, which, usually, are stored
+in separate codebases and are independent from others. They communicate with
+each other through some simple Application Programming Interfaces (APIs). Such
+component are commonly named microservices.
+
+Microservices help to avoid general pitfalls of the monolithic architecture.
+Smaller components easier to understand and modify. There are strict boundaries
+between components and it's almost impossible to break one component by modifing
+the other. It can happens only if the API of components will be
+disrupted.  
 
 \begin{figure}[H]
 \begin{minipage}{\textwidth}
 \includegraphics[width=\textwidth]{figs/LHCbPR2.pdf}
-\caption{\label{fig01}Function’s CPU Time report. The first column contains function names. The second column is a CPU 
-time usage and the last column contains the names of the shared libraries where the functions are defined.}
+\caption{\label{fig02} Sequence diagram of interaction between test
+running services, LHCbPR~v2  microservices and users
 \end{minipage}
 \end{figure}
 
@@ -123,6 +185,14 @@ time usage and the last column contains the names of the shared libraries where 
 \begin{minipage}{\textwidth}
 \includegraphics[width=0.75\textwidth]{figs/lhcbpr-nodes.pdf}
 \caption{\label{fig01}Function’s CPU Time report. The first column contains function names. The second column is a CPU 
+time usage and the last column contains the names of the shared libraries where the functions are defined.}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\begin{minipage}{\textwidth}
+\includegraphics[width=\textwidth]{figs/models.pdf}
+\caption{\label{figmodels}Function’s CPU Time report. The first column contains function names. The second column is a CPU 
 time usage and the last column contains the names of the shared libraries where the functions are defined.}
 \end{minipage}
 \end{figure}
