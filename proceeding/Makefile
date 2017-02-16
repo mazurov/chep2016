@@ -5,6 +5,6 @@ show: mazurov-chep2016.pdf
 
 mazurov-chep2016.pdf: mazurov-chep2016.tex figs/*.pdf
 	pdflatex mazurov-chep2016.tex && pdflatex mazurov-chep2016.tex
-
+# FIXME: it
 clean:
 	rm *.pdf *.aux *.log
