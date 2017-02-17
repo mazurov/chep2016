@@ -23,11 +23,11 @@
 \usepackage{fancyhdr}
 \setlength{\headheight}{15.2pt}
 \pagestyle{fancyplain}
-\renewcommand{\baselinestretch}{2.0}
+\renewcommand{\baselinestretch}{1.0}
  
 \fancyhf{}
 \lhead{\fancyplain{}{{\bf Version 1.0} (\today)}}
-\rhead{\fancyplain{}{\href{https://github.com/mazurov/chep2016/compare/v1.9...v1.10}{https://github.com/mazurov/chep2012/compare/v1.9...v1.10}}}
+\rhead{\fancyplain{}{\href{https://github.com/mazurov/chep2016}{https://github.com/mazurov/chep2016}}}
 
 \linenumbers
 %======================================================================================================================
@@ -91,9 +91,9 @@ In LHCb, as in all High Energy Physics (HEP) experiments, complex software is
 used to process the data recorded by the detectors. Whenever developers change
 or modify their software, even a small tweak can have unexpected
 consequences. Regression and performance testing is testing existing software
-applications to make sure that a change does not brake or degrade any existing
+applications to make sure that a change does not break or degrade any existing
 functionality. The purpose of these tests is to catch issues that may have been
-introduced into a new build, and to ensure that previously eradicated issues
+introduced into a new build and to ensure that previously eradicated issues
 continue to stay fixed. By re-running testing scenarios that were originally
 scripted when known problems were first fixed, you can make sure that any new
 changes to an application have not resulted in a regression, or caused components
@@ -112,11 +112,11 @@ avoid some major pitfalls of the previous version~\cite{lhcbpr}.
 Section~\ref{sec:arch} gives a brief overview of the previous LHCbPR version,
 its advantages and disadvantages, following by the description of the
 new architecture. In Section~\ref{sec:impl} the implementation details are outlined.
-Real examples are shown in the forth section.
+
 
 \section{LHCbPR Software Architecture}\label{sec:arch}
 
-Figure~\ref{fig01} presents a general sequence diagram of interaction between
+Figure~\ref{fig01} presents a general sequence diagram of the interaction between
 the tests running service, LHCbPR  and users. The test service requests from
 LHCbPR information on how to run tests, then actually runs the tests and finally
 saves the results back to LHCbPR. Users have an ability to retrieve and analyse
@@ -158,20 +158,20 @@ prototyping stage of the software products:
 and all developers use the same technology stack.  
 \item Simple to deploy application since you usually have to run the application in the same
 runtime and environment.
-\item Simple to scale --- you can run multiply copies of the application behind a
+\item Simple to scale --- you can run multiple copies of the application behind a
 load balancer.
 \end{itemize}
 
 But the advantages of such architecture works only for small applications,
 usually at the time when you only start to develop it. In the growing
 monolithic application the disadvantages become more annoying and slow down the
-development process. One of the solution is to use the microservices architecture.  
+development process. One of the solutions is to use the microservices architecture.  
 
 \subsection{Microservices Architecture}
 
 In opposite to the monolithic architecture, the microservices architecture
 applications are built from the smaller components, which are usually  stored
-in separate codebases and are independent from each other. In the new version of LHCbPR
+in separate codebases and are independent of each other. In the new version of LHCbPR
 components communicate through simple Application Programming
 Interfaces (APIs). Such components are commonly named microservices.
 
@@ -197,7 +197,7 @@ environments and use various technologies, which leads to additional efforts for
 supporting and deploying such systems.
 \end{itemize}
 
-The next section shows details of the new LHCbPR implementation and outline how
+The next section shows details of the new LHCbPR implementation and outlines how
 major microservices pitfalls were solved.
 
 
@@ -224,9 +224,9 @@ compiler version and machine architecture. At the scheduled time the test servic
 requests additional information from LHCbPR application: the name of the
 program for running the test and the path to the test script. After the testing finishes
 the required  test results are saved to LHCbPR. All information about the tests
-and its results are stored at MySQL database. The other components can access
+and its results are stored at MySQL database. The other components can access the
 database through the LHCbPR API backend microservice. This service is the REST web
-service that allows clients to retrieve and update information in database be making
+service that allows clients to retrieve and update information in the database be making
 HTTP requests. The advantage of the service is that it hides database
 implementation --- clients can retrieve only information that the service provides
 and could not directly access the database. Most of the changes in the database schema
@@ -263,7 +263,7 @@ output without installing ROOT.
 \subsection{Web application}\label{sec:webapp}
 
 The regression tests do not make sense if there are no tools for analyzing the
-results. For that reason it a web frontend was created  that uses the API and
+results. For that reason a web frontend was created  that uses the API and
 ROOT services described above.
 
 This frontend has the following functions:
@@ -285,12 +285,12 @@ selected tests. Analysis modules work like plugins --- each module is stored in
 the dedicated folder and does not depend on the other modules. The application is
 structured so people can work independently on modules. For the developers
 convenience the main library contains a set of web components that implements
-the functionality common for most of the analysis modules. For example, the
+the functionality common to most of the analysis modules. For example, the
 common components are the form for searching test results and component for
 displaying histograms retrieved from the ROOT service.
 
 The application can have as many analysis modules as  number of tests or even
-more. But it is not necessary to create analysis for each test beacause the
+more. But it is not necessary to create analysis for each test because the
 application includes generic modules that can handle results of most of the
 tests. For example, it includes a module that can plot trend analysis of any
 numeric value that was probed in different versions of some application. Another
@@ -313,7 +313,7 @@ test results as  shown at Figure~\subref*{fig:webapp:analyse}.
 \end{figure}
 
 \section{Deployment}
-The microservices pitfall appears to be the difficulty to develop components in different runtimes and in
+The microservices pitfall appears to be the difficulty in developing components in different runtimes and in
 different technology stacks.
 
 For example, LHCbPR uses the following tools and libraries:
@@ -334,7 +334,7 @@ These issues are resolved in LHCbPR by packaging services into
 \textit{Compose~\cite{compose}} tool. \docker containers guarantee that the
 operating system and software will always run the same regardless of its
 environemnt. \compose is a tool for defining and running multi-container \docker
-applications. In our case such applications are LHCbPR's services. \composes
+applications. In our case, such applications are LHCbPR's services. \composes
 configuration can be shared between developers, so they can be sure that the
 services communicate in the same environment. The deployment into production
 becomes  smooth since the same
@@ -359,7 +359,7 @@ be done easily since we can use \docker tools for that.
 
 \section{Summary}
 In this paper we presented a new version of the LHCb performance and regression
-testing framework. This versions demonstrates the advantages of microservices
+testing framework. This version demonstrates the advantages of microservices
 approach for building complex applications.
 
 The new LHCbPR is currently used in the production at LHCb experiment and handle
